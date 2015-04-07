@@ -33,17 +33,19 @@ Usage of smstoken:
 
 # APIs
 1. request send sms token.
-
+```
 	Method: POST
 	URI:	/send
 	Post Body(in JSON): {"From": "who sent sms", "To": "send sms to whom", "Text": "text before token"}
 	Returns: HTTP Code 200 or 400 or 500
+```
 
 2. request verify sms token.
-
+```
 	Method: GET
 	URI:	/validation/:phone/:token (NOTE: :phone and :token is actual phone number and token number here, eg: /validation/2343434/334343)
 	Returns: HTTP Code 200: { "result": true/false } or 400 or 500
+```
 
 
 # API signature
