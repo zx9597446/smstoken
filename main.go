@@ -58,7 +58,9 @@ func NewTwilioSender() *TwilioSender {
 }
 
 func (ts *TwilioSender) SendSMS(send Send) error {
-	_, _, err := ts.client.SendSMS(send.From, send.To, send.Text+send.Token, "", "")
+	log.Println(send.From, send.To, send.Text+send.Token)
+	resp, except, err := ts.client.SendSMS(send.From, send.To, send.Text+send.Token, "", "")
+	log.Println(resp, except)
 	return err
 }
 
