@@ -70,14 +70,11 @@ func sendSMS(send Send) {
 	}
 }
 
-func saveToRedis(send Send, isExpire bool) {
+func saveToRedis(send Send) {
 	send.LastSendAt = time.Now()
 	stream, _ := json.Marshal(send)
-	if isExpire {
-		redisClt.Setex(send.To, int64(cfg.TokenKeepAliveInSeconds), stream)
-	} else {
-		redisClt.Set(send.To, stream)
-	}
+	d := time.Since(send.LastSendAt)
+	redisClt.Setex(send.To, int64(cfg.TokenKeepAliveInSeconds-int(d.Seconds())), stream)
 }
 
 func postSend(w rest.ResponseWriter, r *rest.Request) {
@@ -90,7 +87,7 @@ func postSend(w rest.ResponseWriter, r *rest.Request) {
 	if err != nil {
 		send.Token = randomNumber(cfg.TokenLength)
 		sendSMS(send)
-		saveToRedis(send, true)
+		saveToRedis(send)
 		w.WriteHeader(http.StatusOK)
 		return
 	}
@@ -106,7 +103,7 @@ func postSend(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 	sendSMS(saved)
-	saveToRedis(saved, false)
+	saveToRedis(saved)
 	w.WriteHeader(http.StatusOK)
 }
 

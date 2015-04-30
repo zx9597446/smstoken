@@ -149,3 +149,10 @@ func TestGetValidation(t *testing.T) {
 	fake := requestSend(send, t)
 	requestValidation(send.To, fake.tokenLastSend, t)
 }
+
+func TestRedisTTL(t *testing.T) {
+	err := redisClt.Setex("key", 30, []byte("value"))
+	if err != nil {
+		t.Fatal(err)
+	}
+}
